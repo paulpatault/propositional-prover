@@ -1,6 +1,8 @@
 open Types
 open Parselex
 
+let (++) r_env pair = Alpha_beta.(++) !r_env pair
+
 let interactive_loop = fun () ->
   let open Typing in
   let open Format in
@@ -28,7 +30,7 @@ let interactive_loop = fun () ->
           let x, sa = split ':' arg in
           let a = parse sa in
           check !env a Type;
-          env := (x, (a, None)) :: !env;
+          env := env ++ (x,a);
           printf "%s assumed of type %a@." x pp_expr a
       | "define" ->
           let x, st = split '=' arg in

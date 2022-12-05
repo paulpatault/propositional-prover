@@ -1,1 +1,3 @@
-a
+define fnat = fun (x : Nat) -> Nat
+define fst  = fun (n : Nat) -> fun (z : Nat) -> n
+define pred = fun (n : Nat) -> Ind fnat Z fst n

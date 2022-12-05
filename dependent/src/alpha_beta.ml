@@ -7,6 +7,8 @@ let fresh =
   let r = ref 0 in
   fun () -> incr r; Format.sprintf "x%d" !r
 
+let (++) ctx (x, a) = (x, (a, None)) :: ctx
+
 let rec fv = function
   | Type | Nat | Z -> S.empty
   | Var x -> S.singleton x
@@ -77,29 +79,37 @@ let rec sub x u = function
 
 let rec normalize ctx = function
   | Type | Nat | Z as t -> t
+
   | Var v ->
       (match List.assoc_opt v ctx with
        | Some (_, Some t) -> normalize ctx t
        | _ -> Var v)
+
   | App (t, u) ->
       (match normalize ctx t with
        | Abs (x, _a, t)
        | Pi (x, _a, t) -> normalize ctx (sub x u t) (* ? *)
        | t -> App (t, normalize ctx u))
+
   | S t ->
       S (normalize ctx t)
 
   | Abs (x, a, t) ->
       let na = normalize ctx a in
-      let nt = normalize ((x, (a, None))::ctx) t in
+      let nt = normalize (ctx++(x,a)) t in
       Abs (x, na, nt)
+
   | Pi (x, a, t) ->
       let na = normalize ctx a in
-      let nt = normalize ((x, (a, None))::ctx) t in
+      let nt = normalize (ctx++(x,a)) t in
       Pi (x, na, nt)
 
-  | Ind _ ->
-      failwith "todo"
+  | Ind (p, z, s, n) ->
+      (match normalize ctx n with
+        | Z   -> Z
+        | S n -> App(App(s, n), Ind (p, z, s, n))
+        | _   -> Ind (normalize ctx p, normalize ctx z, normalize ctx s, n))
+
   | Eq _ ->
       failwith "todo"
   | Refl _ ->

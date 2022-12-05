@@ -28,28 +28,38 @@ let rec infer : context -> expr -> expr = fun ctx -> function
       end
 
   | Abs (v, e1, e2) as inff->
-      let _ = infer ctx e1 in
+      let _ : expr = infer ctx e1 in
       let ctx = (v, (e1, None)) :: ctx in
       let t2 = infer ctx e2 in
-      (* Format.printf "Coucou:::\n inff = %a \n t1 = %a \n t2 = %a----@." pp_expr inff pp_expr t1 pp_expr t2; *)
       Pi (v, e1, t2)
 
   | Pi (v, e1, e2) as e ->
       let t1 = infer ctx e1 in
       let ctx = (v, (t1, None)) :: ctx in
       let t2 = infer ctx e2 in
-      if t1 = Type && t2 = Type then Type
+      if alpha_beta_convertible ~ctx t1 Type &&
+         alpha_beta_convertible ~ctx t2 Type then Type
       else (Format.printf "The term %a devrait etre de type Pi(type, type)@." pp_expr e; raise Type_error)
 
   | Nat -> Type
   | Z -> Nat
-  | S e -> Nat
-  | Ind (e1, e2, e3, e4) -> failwith "not implemented"
+  | S n ->
+      check ctx n Nat;
+      Nat
+
+  | Ind (p, z, s, n) ->
+      check ctx n Nat;
+      check ctx z (App(p, Z));
+      let x = fresh() in
+      let ctx = (x, (Nat, None))::ctx in
+      check ctx z (Pi (x, App(p, Var x), App(p, (S (Var x)))));
+      App(p, n)
+
   | Eq (e1, e2) -> failwith "not implemented"
   | Refl e -> failwith "not implemented"
   | J (e1, e2, e3, e4, e5) -> failwith "not implemented"
 
-let check ctx term typ =
+and check ctx term typ =
   let infered_ty = infer ctx term in
   if not @@ alpha_beta_convertible ~ctx infered_ty typ then
     raise Type_error
