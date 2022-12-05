@@ -1,0 +1,37 @@
+(A => not A) => (not A => A) => 0
+intro h
+intro h'
+cut A \/ not A
+intro h''
+elim h''
+cut not A
+intro g
+intro a
+elim g
+exact a
+elim h
+elim h''
+intro a
+exact a
+intro na
+elim h'
+exact na
+intro na
+elim na
+elim h''
+intro a
+exact a
+intro na
+elim h'
+exact na
+cut not A
+intro na
+right
+exact na
+intro a
+cut not A
+intro na
+elim na
+exact a
+elim h
+exact a

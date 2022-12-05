@@ -1,0 +1,4 @@
+A => A \/ B
+intro ha
+left
+exact ha

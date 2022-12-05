@@ -1,0 +1,56 @@
+(A /\ (B \/ C)) => (A /\ B) \/ (A /\ C)
+intro h
+cut B \/ C
+intro h'
+elim h'
+intro b
+left
+intro
+fst h
+exact h
+exact b
+intro c
+right
+intro
+fst h
+exact h
+exact c
+snd h
+exact h
+
+(λh:A ∧ (B ∨ C).
+   λh':B ∨ C.
+     case(h',
+     (λh'1:B. ι₁{A ∧ C}((π₁(h),h'1))),
+     (λh'2:C. ι₂{A ∧ B}(π₁((h,h'2)))))
+   π₂(h))
+
+λh:A ∧ (B ∨ C).
+  λh':B ∨ C.
+    case(h',
+    ((λh'1:B. ι₁{A ∧ C}((π₁(h),h'1)))),
+    ((λh'2:C. ι₂{A ∧ B}(π₁((h,h'2))))))
+  π₂(h)
+
+
+
+
+---
+  h'2 : C, h' : B ∨ C, h : A ∧ (B ∨ C) ⊢ A ∧ C
+
+  fst h
+  h : A, h'2 : C, h' : B ∨ C ⊢ A ∧ C
+
+  intro
+  h : A, h'2 : C, h' : B ∨ C ⊢ A 
+---
+
+---
+  h'2 : C, h' : B ∨ C, h : A ∧ (B ∨ C) ⊢ A ∧ C
+
+  intro
+  h'2 : C, h' : B ∨ C, h : A ∧ (B ∨ C) ⊢ A
+
+  fst h
+  h : A, h'2 : C, h' : B ∨ C ⊢ A
+---

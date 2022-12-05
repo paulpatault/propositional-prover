@@ -1,0 +1,4 @@
+not 1 => 0
+intro h
+elim h
+intro

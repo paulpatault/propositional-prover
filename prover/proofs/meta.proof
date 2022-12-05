@@ -1,0 +1,2 @@
+not (not (A \/ not A))
+use ./proofs/nnem.proof

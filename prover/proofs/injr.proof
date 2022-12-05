@@ -1,0 +1,4 @@
+B => A \/ B
+intro hb
+right
+exact hb

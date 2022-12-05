@@ -1,0 +1,13 @@
+; (ocamllex
+;  (modules ulexer))
+
+; (menhir
+;  (modules uparser)
+;  (flags
+;   (-v --explain)))
+
+(executable
+  (flags (:standard -w -26-27-32-33))
+  (promote (until-clean))
+  (name main)
+  (libraries camlp-streams))

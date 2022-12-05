@@ -1,0 +1,3 @@
+(A => B) => A => B
+intro f
+exact f

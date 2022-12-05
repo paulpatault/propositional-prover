@@ -1,0 +1,7 @@
+(A \/ B) => (B \/ A)
+intro h
+elim h
+right
+exact h1
+left
+exact h2

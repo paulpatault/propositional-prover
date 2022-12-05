@@ -1,0 +1,7 @@
+(A /\ B) => (B /\ A)
+intro g
+intro
+snd g
+exact g
+fst g
+exact g

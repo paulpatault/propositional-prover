@@ -1,0 +1,5 @@
+not (not 0) => 0
+intro h
+elim h
+intro h'
+exact h'

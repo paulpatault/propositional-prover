@@ -1,0 +1,5 @@
+((A => A) => B) => B
+intro g
+elim  g
+intro a
+exact a

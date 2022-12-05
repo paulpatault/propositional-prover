@@ -1,0 +1,9 @@
+(A => B => C) => A /\ B => C
+intro h
+intro g
+cut B
+elim h
+fst g
+exact g
+snd g
+exact g

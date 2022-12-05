@@ -1,0 +1,12 @@
+(ocamllex
+ (modules ulexer))
+
+(menhir
+ (modules uparser)
+ (flags
+  (-v --explain)))
+
+(executables
+  (flags
+    (:standard -w -26-32-33))
+  (names main tests proove))
