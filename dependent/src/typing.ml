@@ -3,8 +3,11 @@ open Alpha_beta
 
 exception Type_error
 
+(* let (--) a ctx = alpha_beta_convertible ~ctx a
+let (-->) f x = f x *)
+
 let rec infer : context -> expr -> expr = fun ctx -> function
-  | Type -> Type
+  | Type | Nat -> Type
 
   | Var v ->
       begin match List.assoc v ctx with
@@ -14,7 +17,7 @@ let rec infer : context -> expr -> expr = fun ctx -> function
             raise Type_error
       end
 
-  | App (e1, e2) as inff ->
+  | App (e1, e2) as m_e ->
       let t1 = infer ctx e1 in
       let t2 = infer ctx e2 in
       begin match t1 with
@@ -27,33 +30,38 @@ let rec infer : context -> expr -> expr = fun ctx -> function
             raise Type_error
       end
 
-  | Abs (v, e1, e2) as inff->
+  | Abs (v, e1, e2) as m_e ->
       let _ : expr = infer ctx e1 in
-      let ctx = (v, (e1, None)) :: ctx in
-      let t2 = infer ctx e2 in
+      let t2 = infer (ctx ++ (v,e1)) e2 in
       Pi (v, e1, t2)
 
   | Pi (v, e1, e2) as e ->
       let t1 = infer ctx e1 in
-      let ctx = (v, (t1, None)) :: ctx in
-      let t2 = infer ctx e2 in
+      let t2 = infer (ctx ++ (v,t1)) e2 in
       if alpha_beta_convertible ~ctx t1 Type &&
          alpha_beta_convertible ~ctx t2 Type then Type
       else (Format.printf "The term %a devrait etre de type Pi(type, type)@." pp_expr e; raise Type_error)
 
-  | Nat -> Type
   | Z -> Nat
+
   | S n ->
       check ctx n Nat;
       Nat
 
+  | Ind (p, z, s, Z) ->
+      let iz = infer ctx z in
+      if alpha_beta_convertible ~ctx s (App (p, Z)) then
+      (* if s -- ctx --> s (App (p, Z)) then *)
+        iz
+      else raise Type_error
+
   | Ind (p, z, s, n) ->
+      let nn = fresh () in
       check ctx n Nat;
-      check ctx z (App(p, Z));
-      let x = fresh() in
-      let ctx = (x, (Nat, None))::ctx in
-      check ctx z (Pi (x, App(p, Var x), App(p, (S (Var x)))));
-      App(p, n)
+      check ctx p (Pi (nn, Nat, Type));
+      check ctx z (App (p, Z));
+      check ctx s (Pi (nn, Nat, Pi ("e", App (p, Var nn), App (p, S (Var nn)))));
+      App (p, n)
 
   | Eq (e1, e2) -> failwith "not implemented"
   | Refl e -> failwith "not implemented"

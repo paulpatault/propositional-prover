@@ -1,12 +1,12 @@
 open Types
 open Parselex
+open Typing
+open Format
 
-let (++) r_env pair = Alpha_beta.(++) !r_env pair
+let (++) ref_ctx pair = Alpha_beta.(++) !ref_ctx pair
 
 let interactive_loop = fun () ->
-  let open Typing in
-  let open Format in
-  let env = ref [] in
+  let ctx = ref [] in
   let loop = ref true in
   let file = open_out "interactive.proof" in
   let split c s =
@@ -29,31 +29,31 @@ let interactive_loop = fun () ->
       | "assume" ->
           let x, sa = split ':' arg in
           let a = parse sa in
-          check !env a Type;
-          env := env ++ (x,a);
+          check !ctx a Type;
+          ctx := ctx ++ (x,a);
           printf "%s assumed of type %a@." x pp_expr a
       | "define" ->
           let x, st = split '=' arg in
           let t = parse st in
-          let a = infer !env t in
-          env := (x, (a, Some t)) :: !env;
+          let a = infer !ctx t in
+          ctx := (x, (a, Some t)) :: !ctx;
           printf "%s define to %a of type %a@." x pp_expr t pp_expr a
       | "context" ->
-          printf "%a@." context !env
+          printf "%a@." context !ctx
       | "type" ->
           let t = parse arg in
-          let a = infer !env t in
+          let a = infer !ctx t in
           printf "%a is of type %a@." pp_expr t pp_expr a
       | "check" ->
           let t, a = split '=' arg in
           let t = parse t in
           let a = parse a in
-          check !env t a;
+          check !ctx t a;
           printf "Ok.@."
       | "eval" ->
           let t = parse arg in
-          let _ = infer !env t in
-          printf "%a@." pp_expr (Alpha_beta.normalize !env t)
+          let _ = infer !ctx t in
+          printf "%a@." pp_expr (Alpha_beta.normalize !ctx t)
       | "exit" -> loop := false
       | "" | "#" -> ()
       | cmd -> printf "Unknown command: %s@." cmd

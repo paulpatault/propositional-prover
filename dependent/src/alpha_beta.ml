@@ -106,8 +106,8 @@ let rec normalize ctx = function
 
   | Ind (p, z, s, n) ->
       (match normalize ctx n with
-        | Z   -> Z
-        | S n -> App(App(s, n), Ind (p, z, s, n))
+        | Z   -> normalize ctx z
+        | S n -> normalize ctx (App(App(s, n), Ind (p, z, s, n)))
         | _   -> Ind (normalize ctx p, normalize ctx z, normalize ctx s, n))
 
   | Eq _ ->

@@ -21,7 +21,7 @@ open Format
 
 let rec pp_expr fmt = function
   | Type ->
-      fprintf fmt "type"
+      fprintf fmt "Type"
   | Var v ->
       fprintf fmt "%s" v
   | App (e1, e2) ->
@@ -31,7 +31,7 @@ let rec pp_expr fmt = function
   | Pi (v, e1, e2) ->
       fprintf fmt "(Π%s:%a. %a)" v pp_expr e1 pp_expr e2
   | Nat ->
-      fprintf fmt "nat"
+      fprintf fmt "Nat"
   | Z ->
       fprintf fmt "Z"
   | S e ->
