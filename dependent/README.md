@@ -5,15 +5,21 @@
 - Lancer l'interaction automatique
   ```
   $ make
-  $ cat proofs/bool.proof | ./main.exe
+  $ cat proofs/bool.proof | ./loop.exe
   ```
 
 - Interaction
   ```
   $ make
-  $ ./main.exe
+  $ ./loop.exe
   ```
   ou
   ```
-  $ dune exec src/main.exe
+  $ dune exec src/loop.exe
   ```
+
+### Remarques
+
+- le fichier main contient des tests de développement
+- la fonction `alpha` qui vérifie la α-conversion de deux termes est efficace grace à
+  l'utilisation d'un environnement de substitution

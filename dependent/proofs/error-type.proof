@@ -1,0 +1,5 @@
+define fnat   = fun (x : Nat) -> Nat
+define succ_1 = fun (x : Nat) -> fun (y : Nat) -> (S y)
+define add    = fun (m : Nat) -> fun (n : Nat) -> Ind fnat m succ_1 n
+eval   add Nat (S (S Z))
+eval   add (S (S (Type Z))) Z

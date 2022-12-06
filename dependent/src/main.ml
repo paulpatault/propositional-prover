@@ -3,7 +3,7 @@ open Format
 open Alpha_beta
 open Typing
 
-(* let t1 = App (Abs ("x", Type, Var "x"), Var "y")
+let t1 = App (Abs ("x", Type, Var "x"), Var "y")
 let t2 = App (Abs ("x", Type, Var "x"), Var "z")
 let t3 = App (Abs ("y", Type, Var "y"), Var "z")
 let t4 = App (Abs ("y", Type, Var "x"), Var "z")
@@ -24,6 +24,4 @@ let () =
 let () =
   (* printf "%a : %a@." expr t1 expr (infer ["y", (Nat, None)] t1) *)
   printf "%a : %a@." pp_expr t1 pp_expr (infer [] t1)
- *)
-let () =
-  Loop.interactive_loop ()
+

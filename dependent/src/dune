@@ -6,8 +6,8 @@
 ;  (flags
 ;   (-v --explain)))
 
-(executable
+(executables
   (flags (:standard -w -26-27-32-33))
   (promote (until-clean))
-  (name main)
+  (names loop main)
   (libraries camlp-streams))

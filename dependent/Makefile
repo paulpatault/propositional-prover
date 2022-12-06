@@ -1,6 +1,6 @@
 exe:
 	dune build
-	mv ./src/main.exe .
+	mv ./src/loop.exe .
 
 clean:
 	dune clean

@@ -3,3 +3,5 @@ dependent/.DS_Store
 prover/.DS_Store
 dependent/src/main.exe
 dependent/main.exe
+dependent/loop.exe
+dependent/aa.ml

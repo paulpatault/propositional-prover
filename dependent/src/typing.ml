@@ -1,7 +1,9 @@
 open Types
 open Alpha_beta
 
-exception Type_error
+exception Type_error of expr * expr * expr
+exception Type_error_
+exception Free_var of string
 
 (* let (--) a ctx = alpha_beta_convertible ~ctx a
 let (-->) f x = f x *)
@@ -12,9 +14,7 @@ let rec infer : context -> expr -> expr = fun ctx -> function
   | Var v ->
       begin match List.assoc v ctx with
         | ty, expr -> ty
-        | exception Not_found ->
-            Format.printf "\nProblem with the free variable [%s]\n@." v;
-            raise Type_error
+        | exception Not_found -> raise (Free_var v)
       end
 
   | App (e1, e2) as m_e ->
@@ -26,8 +26,7 @@ let rec infer : context -> expr -> expr = fun ctx -> function
         | Abs (_, t, e) when alpha_beta_convertible ~ctx t (infer ctx t2) ->
             e
         | _ ->
-            Format.printf "\n%a : %a should be of type [(%a) -> ...]\n@." pp_expr e1 pp_expr t1 pp_expr t2;
-            raise Type_error
+            raise (Type_error (e1, t1, t2))
       end
 
   | Abs (v, e1, e2) as m_e ->
@@ -40,7 +39,7 @@ let rec infer : context -> expr -> expr = fun ctx -> function
       let t2 = infer (ctx ++ (v,t1)) e2 in
       if alpha_beta_convertible ~ctx t1 Type &&
          alpha_beta_convertible ~ctx t2 Type then Type
-      else (Format.printf "The term %a devrait etre de type Pi(type, type)@." pp_expr e; raise Type_error)
+      else raise (Type_error (e, Pi(v, t1, t2), Pi(v, Type, Type)))
 
   | Z -> Nat
 
@@ -51,23 +50,37 @@ let rec infer : context -> expr -> expr = fun ctx -> function
   | Ind (p, z, s, Z) ->
       let iz = infer ctx z in
       if alpha_beta_convertible ~ctx s (App (p, Z)) then
-      (* if s -- ctx --> s (App (p, Z)) then *)
         iz
-      else raise Type_error
+      else raise Type_error_
 
   | Ind (p, z, s, n) ->
-      let nn = fresh () in
+      let vn = fresh () in
+      let ve = fresh () in
       check ctx n Nat;
-      check ctx p (Pi (nn, Nat, Type));
+      check ctx p (Pi (vn, Nat, Type));
       check ctx z (App (p, Z));
-      check ctx s (Pi (nn, Nat, Pi ("e", App (p, Var nn), App (p, S (Var nn)))));
+      check ctx s (Pi (vn, Nat, Pi (ve, App (p, Var vn), App (p, S (Var vn)))));
       App (p, n)
 
-  | Eq (e1, e2) -> failwith "not implemented"
-  | Refl e -> failwith "not implemented"
-  | J (e1, e2, e3, e4, e5) -> failwith "not implemented"
+  | Eq (e1, e2) ->
+      check ctx e2 (infer ctx e1);
+      Type
+
+  | Refl e ->
+      Eq (e, e)
+
+  | J (p, r, x, y, e) ->
+      let vx = fresh() in
+      let vy = fresh() in
+      let ve = fresh() in
+      let a = infer ctx x in
+      check ctx y a;
+      check ctx e (Eq (x, y));
+      check ctx p (Pi (vx, a, Pi (vy, a, Pi (ve, Eq(Var vx, Var vy), Type))));
+      check ctx r (Pi (vx, a, App(App(App(p, Var vx), Var vx), Refl (Var vx))));
+      App(App(App(p, x), y), e)
 
 and check ctx term typ =
   let infered_ty = infer ctx term in
   if not @@ alpha_beta_convertible ~ctx infered_ty typ then
-    raise Type_error
+    raise (Type_error (term, infered_ty, typ))
