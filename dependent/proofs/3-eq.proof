@@ -1,4 +1,4 @@
 define cong_eq_suc = fun (m : Nat) -> fun (n : Nat) -> fun (e : Eq m n) -> Eq (S m) (S n)
 define suc_refl  = fun (n : Nat) -> Refl (S n)
 define suc_j_eq  = fun (m : Nat) -> fun (n : Nat) -> fun (eq : Eq m n) -> J cong_eq_suc suc_refl m n eq
-check  suc_eq    = Pi (m : Nat) -> Pi (n : Nat) -> Pi (e : Eq m n) -> Eq (S m) (S n)
+check  suc_j_eq  = Pi (m : Nat) -> Pi (n : Nat) -> Pi (e : Eq m n) -> Eq (S m) (S n)

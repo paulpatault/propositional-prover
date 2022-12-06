@@ -2,12 +2,6 @@ open Stlc
 open Printer
 open Format
 
-(* let () =
-  printf "une formule : @.";
-  let lexbuf = Lexing.from_channel stdin in
-  let formule_in = Uparser.term Ulexer.scan_token lexbuf in
-  printf "%a" term formule_in *)
-
 
 let eval_and_print ~str s =
   let lexbuf = Lexing.from_string s in

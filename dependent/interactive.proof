@@ -1,4 +1,20 @@
-define cong_eq_suc = fun (m : Nat) -> fun (n : Nat) -> fun (e : Eq m n) -> Eq (S m) (S n)
-define suc_refl  = fun (n : Nat) -> Refl (S n)
-define suc_j_eq  = fun (m : Nat) -> fun (n : Nat) -> fun (eq : Eq m n) -> J cong_eq_suc suc_refl m n eq
-check  suc_eq    = Pi (m : Nat) -> Pi (n : Nat) -> Pi (e : Eq m n) -> Eq (S m) (S n)
+read   proofs/2-add.proof
+define fnat   = fun (x : Nat) -> Nat
+define succ_1 = fun (x : Nat) -> fun (y : Nat) -> (S y)
+define add    = fun (m : Nat) -> fun (n : Nat) -> Ind fnat m succ_1 n
+eval   add (S (S (S Z))) (S (S Z))
+eval   add (S (S (S Z))) Z
+read   proofs/2-pred.proof
+define fnat = fun (x : Nat) -> Nat
+define fst  = fun (n : Nat) -> fun (z : Nat) -> n
+define pred = fun (n : Nat) -> Ind fnat Z fst n
+eval   pred Z
+eval   pred (S (S (S Z)))
+define id1 = fun (n : Nat) -> add Z n
+define id2 = fun (n : Nat) -> pred (S n)
+define trois = S (S (S Z))
+eval id1 Z
+eval id2 Z
+check_val id1 trois = trois
+check_val id2 trois = id1 trois
+exit

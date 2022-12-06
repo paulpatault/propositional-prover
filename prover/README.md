@@ -13,14 +13,24 @@
   ```
   $ dune exec src/proove.exe
   ```
+
 ### Remarques
 
 - Tous les fichiers de preuves passent.
 - J'ai re-codé le lexer/parser avec ocamllex et menhir (cela ajoute donc une dépendance menhir `opam install menhir`).
 - "pas à pas" correspond à une attente d'input dans la boucle interactive (permet de lire pas à pas une preuve déjà écrite).
 
+- Le projet est organisé en plusieurs fichiers :
+  + `proove.ml` : point d'entrée principal
+  + `printer.ml` : définitions des fonctions d'affichage
+  + `proving.ml` : boucle d'interaction
+  + `stlc.ml` : gestion des types : inférence et type checking
+  + `ulexer.mll` : generateur de lexer avec ocamllex
+  + `uparser.mll` : generateur de parser avec menhir
+  + `main.ml` et `tests.ml` : tests écrit à la main (ignorer ces fichiers)
+
 ### Features
 
 - `use [filename]` : donner un ficher et appliquer les tactiques s'y trouvant (exemple d'utilisation dans le fichier [meta.proof](proofs/meta.proof))
 - `trustme` : commande de triche qui typecheck avec un `magic` à la OCaml (exemple d'utilisation dans le fichier [triche.proof](proofs/triche.proof))
-- `back` : annule la dernière commande (WIP: ne fonctionne pas sur toutes les tactiques)
+- `back` : annule la dernière commande (WIP: ne fonctionne pas encore sur toutes les tactiques)

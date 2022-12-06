@@ -8,6 +8,7 @@ let fresh =
   fun () -> incr r; Format.sprintf "x'%d" !r
 
 let (++) ctx (x, a) = (x, (a, None)) :: ctx
+let (+++) ctx (x, a, t) = (x, (a, Some t)) :: ctx
 
 let rec fv = function
   | Type | Nat | Z -> S.empty

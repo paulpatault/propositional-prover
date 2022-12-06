@@ -1,0 +1,10 @@
+read   proofs/2-add.proof
+read   proofs/2-pred.proof
+define id1 = fun (n : Nat) -> add Z n
+define id2 = fun (n : Nat) -> pred (S n)
+define trois = S (S (S Z))
+eval id1 Z
+eval id2 Z
+check_val id1 trois = trois
+check_val id2 trois = id1 trois
+exit

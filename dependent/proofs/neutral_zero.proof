@@ -1,0 +1,16 @@
+define nat = fun (x : Nat) -> Nat
+define add_rec = fun (x : Nat) -> fun (y : Nat) -> (S y)
+define add = fun (a : Nat) -> fun (b : Nat) -> Ind nat a add_rec b
+
+define Seq_p = fun (x : Nat) -> fun (y : Nat) -> fun (e : Eq x y) -> Eq (S x) (S y)
+define Seq_r = fun (x : Nat) -> Refl (S x)
+define Seq = fun (a : Nat) -> fun (b : Nat) -> fun (e : Eq a b) -> J Seq_p Seq_r a b e
+check Seq = Pi (x : Nat) -> Pi (y : Nat) -> Pi (e : Eq x y) -> Eq (S x) (S y)
+
+define p = fun (n : Nat) -> Eq (add n Z) n
+define s = fun (n : Nat) -> fun (h : p n) -> Seq (add n Z) n h
+check  s = Pi (n : Nat) -> Pi (h : p n) -> p (S n)
+
+define addz = fun (n : Nat) -> Ind p (Refl Z) s n
+check addz = Pi (n : Nat) -> Eq (add n Z) n
+exit
