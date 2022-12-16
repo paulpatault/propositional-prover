@@ -33,14 +33,14 @@ let parse_cli () =
 
 let arg_for = Format.sprintf "Please provide an argument for %s."
 
-exception E
+exception Back
 
 let rec proove env a =
   Format.printf "%a\n?@." sequent (env, a);
   let cmd, arg = parse_cli () in
 
   match cmd, a with
-  | ("back" | "undo" | "cancel"), _ -> raise E
+  | ("back" | "undo" | "cancel"), _ -> raise Back
 
   | "intro", TNat -> Zero
 
@@ -49,14 +49,14 @@ let rec proove env a =
       (try
         let t = proove ((arg,a')::env) b' in
         Abs (arg, a', t)
-      with E -> proove env a)
+      with Back -> proove env a)
 
   | "intro", TPair (a', b')->
       (try
         let ta = proove (env) (a') in
         let tb = proove (env) (b') in
         Pair (ta, tb)
-      with E -> proove env a)
+      with Back -> proove env a)
 
   | "intro", T1 -> Unit
 
@@ -64,13 +64,13 @@ let rec proove env a =
       (try
         let ll = proove env l in
         Left (r, ll)
-      with E -> proove env a)
+      with Back -> proove env a)
 
   | "right", TPlus (l, r) ->
       (try
         let rr = proove env r in
         Right (l, rr)
-      with E -> proove env a)
+      with Back -> proove env a)
 
   | "elim", _ -> (* (f : A => B, ... |- B)  '->  (... |- A) *)
       if arg = "" then error ~env ~a (arg_for cmd) else
@@ -90,7 +90,7 @@ let rec proove env a =
               (* Abs(arg1, l, t1), Abs(arg2, r, t2)) *)
           | _ -> error ~env ~a "Not the right type"
       with Not_found -> error ~env ~a (Format.sprintf "Hypothesis %s doesn't exist" arg)
-          | E -> proove env a)
+          | Back -> proove env a)
 
   | "cut", _ ->
       (try
@@ -101,7 +101,7 @@ let rec proove env a =
         Format.printf "[On prouve %a pour le cut fait plus haut]\n" Printer.ty targ;
         let r = proove env targ in
         App(l, r)
-      with E -> proove env a)
+      with Back -> proove env a)
 
   | ("fst"|"snd"), _ ->
       if arg = "" then error ~env ~a (arg_for cmd) else
@@ -112,7 +112,7 @@ let rec proove env a =
           | TPair (_, r) when cmd = "snd" -> Snd (proove ((arg, r)::env') a)
           | _ -> error ~env ~a "Not the right type"
       with Not_found -> error ~env ~a (Format.sprintf "Hypothesis %s doesn't exist" arg)
-         | E -> proove env a)
+         | Back -> proove env a)
 
   | "exact", _ ->
       let t = mk_term arg in
