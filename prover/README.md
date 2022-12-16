@@ -25,8 +25,9 @@
   + `printer.ml` : définitions des fonctions d'affichage
   + `proving.ml` : boucle d'interaction
   + `stlc.ml` : gestion des types : inférence et type checking
-  + `ulexer.mll` : generateur de lexer avec ocamllex
-  + `uparser.mll` : generateur de parser avec menhir
+  + `ulexer.mll` : générateur de lexer avec ocamllex
+  + `uparser.mly` : générateur de parser avec menhir
+  + `types.ml` : définition de l'AST de termes
   + `main.ml` et `tests.ml` : tests écrit à la main (ignorer ces fichiers)
 
 ### Features
