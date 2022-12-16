@@ -2,7 +2,7 @@
 
 ### Usage
 
-- Prouver un fichier
+- Prouver un fichier (1)
   ```
   $ dune exec src/proove.exe -- proofs/xxx.proof [ajouter arg pour "pas à pas"]
   ```
@@ -16,8 +16,8 @@
 
 ### Remarques
 
-- Tous les fichiers de preuves passent.
-- J'ai re-codé le lexer/parser avec ocamllex et menhir (cela ajoute donc une dépendance menhir `opam install menhir`).
+- Tous les fichiers de preuves passent correctement avec la commande (1).
+- J'ai re-codé un lexer/parser avec ocamllex et menhir (cela ajoute donc une dépendance menhir `opam install menhir`).
 - "pas à pas" correspond à une attente d'input dans la boucle interactive (permet de lire pas à pas une preuve déjà écrite).
 
 - Le projet est organisé en plusieurs fichiers :
@@ -30,7 +30,7 @@
   + `types.ml` : définition de l'AST de termes
   + `main.ml` et `tests.ml` : tests écrit à la main (ignorer ces fichiers)
 
-### Features
+### Additions personnelles
 
 - `use [filename]` : donner un ficher et appliquer les tactiques s'y trouvant (exemple d'utilisation dans le fichier [meta.proof](proofs/meta.proof))
 - `trustme` : commande de triche qui typecheck avec un `magic` à la OCaml (exemple d'utilisation dans le fichier [triche.proof](proofs/triche.proof))
