@@ -6,8 +6,8 @@
   ```
   $ dune exec src/proove.exe -- proofs/xxx.proof [ajouter arg pour "pas à pas"]
   ```
-  Si on donne un arg en plus (n'importe quoi),
-  le prouveur attend que l'on entre qqchose pour avancer.
+  Si on donne un argument en plus (n'importe quoi),
+  le prouveur attend que l'on entre quelque chose pour avancer.
 
 - Interaction
   ```
